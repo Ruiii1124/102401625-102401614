@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布成功 - 校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="success-page">
+    <div class="check">✓</div>
+    <h2>发布成功</h2>
+    <p>信息已展示在首页，有新线索时对方可以通过预留方式联系你。</p>
+
+    <button class="btn-primary" onclick="viewDetail()" style="margin-bottom:12px;">查看信息详情</button>
+    <button class="btn-secondary" onclick="goHome()">返回首页</button>
+  </div>
+
+  <script>
+    // 从 URL 获取刚发布信息的 id
+    function getId() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    function viewDetail() {
+      const id = getId();
+      if (id) {
+        window.location.href = 'detail.html?id=' + id;
+      } else {
+        window.location.href = 'index.html';
+      }
+    }
+
+    function goHome() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

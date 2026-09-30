@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的发布 - 校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div class="navbar">
+    <button class="back-btn" onclick="goBack()">‹</button>
+    <span class="title">我的发布</span>
+    <span style="width:28px;"></span>
+  </div>
+
+  <div class="page">
+    <!-- 状态切换 -->
+    <div class="status-tabs">
+      <button class="active" data-status="active" onclick="switchStatus(this, 'active')">进行中</button>
+      <button data-status="resolved" onclick="switchStatus(this, 'resolved')">已完成</button>
+    </div>
+
+    <!-- 发布列表 -->
+    <div id="my-list"></div>
+  </div>
+
+  <!-- 底部导航栏 -->
+  <div class="tabbar">
+    <a class="tab" href="index.html">
+      <span class="icon">🏠</span>首页
+    </a>
+    <a class="tab" href="publish.html">
+      <span class="icon">➕</span>发布
+    </a>
+    <a class="tab active" href="my-posts.html">
+      <span class="icon">👤</span>我的
+    </a>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/my-posts.js"></script>
+</body>
+</html>

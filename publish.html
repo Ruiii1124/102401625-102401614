@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>发布信息 - 校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div class="navbar">
+    <button class="back-btn" onclick="goBack()">‹</button>
+    <span class="title">发布信息</span>
+    <span style="width:28px;"></span>
+  </div>
+
+  <div class="page">
+    <!-- 类型切换 -->
+    <div class="type-switch">
+      <button class="active" data-type="lost" onclick="switchType(this, 'lost')">寻物启事</button>
+      <button data-type="found" onclick="switchType(this, 'found')">招领信息</button>
+    </div>
+
+    <!-- 表单 -->
+    <div class="form-group">
+      <label>物品名称 <span class="required">*</span></label>
+      <input type="text" id="name" placeholder="例如：深蓝色折叠伞">
+    </div>
+
+    <div class="form-group">
+      <label>物品分类</label>
+      <select id="category">
+        <option value="校园卡">校园卡</option>
+        <option value="钥匙">钥匙</option>
+        <option value="雨伞">雨伞</option>
+        <option value="电子产品">电子产品</option>
+        <option value="书籍">书籍</option>
+        <option value="其他" selected>其他</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>时间 <span class="required">*</span></label>
+      <input type="date" id="date">
+    </div>
+
+    <div class="form-group">
+      <label>地点 <span class="required">*</span></label>
+      <input type="text" id="location" placeholder="例如：东三教学楼 204">
+    </div>
+
+    <div class="form-group">
+      <label>详细描述</label>
+      <textarea id="description" placeholder="例如：伞面有白色字母，黑色伞柄。"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>联系方式（QQ号）<span class="required">*</span></label>
+      <input type="text" id="contact" placeholder="例如：2766912385">
+    </div>
+
+    <!-- 上传图片占位（本次不实现真实上传） -->
+    <div class="upload-box" onclick="alert('本次作业暂不支持图片上传')">
+      <span class="plus">+</span>
+      上传物品图片（可选）
+    </div>
+
+    <!-- 发布按钮 -->
+    <button class="btn-primary" onclick="submitForm()">确认发布</button>
+  </div>
+
+  <!-- 提示 toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/publish.js"></script>
+</body>
+</html>

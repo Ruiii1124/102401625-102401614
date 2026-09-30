@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>状态已更新 - 校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="success-page">
+    <div class="check">✓</div>
+    <h2>状态已更新</h2>
+    <p id="status-text">该信息已移入“已完成”列表。</p>
+    <button class="btn-primary" onclick="goMyPosts()">返回我的发布</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      const type = params.get('type');
+
+      const textEl = document.getElementById('status-text');
+      if (type === 'lost') {
+        textEl.textContent = '该信息已标记为“已找回”，并移入“已完成”列表。';
+      } else if (type === 'found') {
+        textEl.textContent = '该信息已标记为“已归还”，并移入“已完成”列表。';
+      }
+    });
+
+    function goMyPosts() {
+      window.location.href = 'my-posts.html';
+    }
+  </script>
+</body>
+</html>

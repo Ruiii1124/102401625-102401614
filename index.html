@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 页面主内容 -->
+  <div class="page">
+    <!-- 问候语 -->
+    <div class="greeting">
+      <div class="hello">你好，同学</div>
+      <h1>找回每一份珍贵</h1>
+    </div>
+
+    <!-- 搜索框（点击跳转搜索页） -->
+    <div class="search-bar" onclick="goSearch()">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="搜索校园卡、钥匙、耳机……" readonly>
+    </div>
+
+    <!-- 筛选标签 -->
+    <div class="filter-tabs">
+      <button class="active" data-type="all" onclick="switchFilter(this, 'all')">最新信息</button>
+      <button data-type="lost" onclick="switchFilter(this, 'lost')">寻物启事</button>
+      <button data-type="found" onclick="switchFilter(this, 'found')">招领信息</button>
+    </div>
+
+    <!-- 分类快捷入口 -->
+    <div class="category-grid">
+      <div class="cat-item" onclick="goSearchWith('校园卡')">
+        <span class="icon">💳</span>校园卡
+      </div>
+      <div class="cat-item" onclick="goSearchWith('钥匙')">
+        <span class="icon">🔑</span>钥匙
+      </div>
+      <div class="cat-item" onclick="goSearchWith('雨伞')">
+        <span class="icon">☂️</span>雨伞
+      </div>
+      <div class="cat-item" onclick="goSearchWith('电子产品')">
+        <span class="icon">🎧</span>电子产品
+      </div>
+    </div>
+
+    <!-- 信息列表 -->
+    <div class="section-title">
+      <h2>刚刚发布</h2>
+      <a href="search.html">查看全部</a>
+    </div>
+
+    <div id="card-list"></div>
+  </div>
+
+  <!-- 底部导航栏 -->
+  <div class="tabbar">
+    <a class="tab active" href="index.html">
+      <span class="icon">🏠</span>首页
+    </a>
+    <a class="tab" href="publish.html">
+      <span class="icon">➕</span>发布
+    </a>
+    <a class="tab" href="my-posts.html">
+      <span class="icon">👤</span>我的
+    </a>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>

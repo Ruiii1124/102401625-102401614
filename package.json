@@ -1,0 +1,28 @@
+{
+  "name": "102401625-102401614",
+  "version": "1.0.0",
+  "description": "校园失物招领小程序 - 软件工程结对作业",
+  "main": "js/data.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ruiii1124/102401625-102401614.git"
+  },
+  "keywords": ["校园", "失物招领", "软件工程"],
+  "author": "102401625-102401614",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ruiii1124/102401625-102401614/issues"
+  },
+  "homepage": "https://github.com/Ruiii1124/102401625-102401614#readme",
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  }
+}

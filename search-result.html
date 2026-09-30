@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>搜索结果 - 校园失物招领</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <div class="navbar">
+    <button class="back-btn" onclick="goBack()">‹</button>
+    <span class="title">搜索结果</span>
+    <span style="width:28px;"></span>
+  </div>
+
+  <div class="page">
+    <!-- 搜索框（可修改关键词重新搜） -->
+    <div class="search-bar" style="padding-right:4px;">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="keyword" placeholder="搜索校园卡、钥匙、耳机……">
+      <button class="btn-primary" style="width:auto;padding:8px 16px;font-size:13px;" onclick="redoSearch()">搜索</button>
+    </div>
+
+    <!-- 结果统计 -->
+    <div class="section-title">
+      <h2 id="result-count">找到 0 条相关信息</h2>
+      <a href="javascript:void(0)" onclick="toggleSort()" id="sort-btn">按时间</a>
+    </div>
+
+    <!-- 结果列表 -->
+    <div id="result-list"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script>
+    let sortByTime = true;
+    let currentParams = { keyword: '', type: 'all', category: 'all' };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const params = new URLSearchParams(window.location.search);
+      currentParams.keyword = params.get('keyword') || '';
+      currentParams.type = params.get('type') || 'all';
+      currentParams.category = params.get('category') || 'all';
+
+      document.getElementById('keyword').value = currentParams.keyword;
+      renderResults();
+    });
+
+    // 重新搜索
+    function redoSearch() {
+      const kw = document.getElementById('keyword').value.trim();
+      const params = new URLSearchParams();
+      if (kw) params.set('keyword', kw);
+      if (currentParams.type !== 'all') params.set('type', currentParams.type);
+      if (currentParams.category !== 'all') params.set('category', currentParams.category);
+      window.location.href = 'search-result.html?' + params.toString();
+    }
+
+    // 切换排序
+    function toggleSort() {
+      sortByTime = !sortByTime;
+      document.getElementById('sort-btn').textContent = sortByTime ? '按时间' : '按名称';
+      renderResults();
+    }
+
+    // 渲染结果
+    function renderResults() {
+      let items = searchItems(currentParams.keyword);
+
+      // 类型筛选
+      if (currentParams.type !== 'all') {
+        items = items.filter(it => it.type === currentParams.type);
+      }
+      // 分类筛选
+      if (currentParams.category !== 'all') {
+        items = items.filter(it => it.category === currentParams.category);
+      }
+
+      // 排序
+      if (sortByTime) {
+        items.sort((a, b) => b.createdAt - a.createdAt);
+      } else {
+        items.sort((a, b) => a.name.localeCompare(b.name, 'zh'));
+      }
+
+      document.getElementById('result-count').textContent = `找到 ${items.length} 条相关信息`;
+
+      const listEl = document.getElementById('result-list');
+      if (items.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty">
+            <span class="icon">🔍</span>
+            没有找到相关信息，换个关键词试试
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = items.map(item => {
+        const icon = getCategoryIcon(item.category);
+        const typeText = item.type === 'lost' ? '寻物' : '招领';
+        const typeClass = item.type === 'lost' ? 'lost' : 'found';
+        const statusTag = item.status === 'resolved'
+          ? '<span class="tag resolved">已解决</span>'
+          : '';
+
+        return `
+          <div class="card" onclick="goDetail('${item.id}')">
+            <div class="thumb">${icon}</div>
+            <div class="info">
+              <span class="tag ${typeClass}">${typeText}</span>
+              ${statusTag}
+              <div class="name">${escapeHtml(item.name)}</div>
+              <div class="meta">📍 ${escapeHtml(item.location)}</div>
+              <div class="time">${escapeHtml(item.date)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getCategoryIcon(category) {
+      const map = {
+        '校园卡': '💳', '钥匙': '🔑', '雨伞': '☂️',
+        '电子产品': '🎧', '书籍': '📚', '其他': '📦'
+      };
+      return map[category] || '📦';
+    }
+
+    function goDetail(id) {
+      window.location.href = 'detail.html?id=' + id;
+    }
+
+    function goBack() {
+      if (history.length > 1) history.back();
+      else window.location.href = 'index.html';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
