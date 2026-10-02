@@ -44,10 +44,9 @@ function renderList() {
     const typeClass = item.type === 'lost' ? 'lost' : 'found';
     const timeText = formatTime(item.createdAt);
 
-    // 已解决状态标签
-    const statusTag = item.status === 'resolved'
-      ? '<span class="tag resolved">已解决</span>'
-      : '';
+    const statusText = getStatusText(item.type, item.status);
+    const statusClass = item.status === 'resolved' ? 'resolved' : typeClass;
+    const statusTag = `<span class="tag ${statusClass}">${statusText}</span>`;
 
     return `
       <div class="card" onclick="goDetail('${item.id}')">

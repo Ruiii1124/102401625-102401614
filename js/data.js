@@ -5,6 +5,23 @@
 const STORAGE_KEY = 'campus_lost_found_items';
 
 /**
+ * 将信息类型和存储状态转换为统一的业务文案。
+ * @param {string} type - 'lost' | 'found'
+ * @param {string} status - 'active' | 'resolved'
+ * @returns {string}
+ */
+function getStatusText(type, status) {
+  if (type !== 'lost' && type !== 'found') return '状态未知';
+  if (status !== 'active' && status !== 'resolved') return '状态未知';
+
+  const labels = {
+    lost: { active: '寻找中', resolved: '已找到' },
+    found: { active: '待认领', resolved: '已归还' }
+  };
+  return labels[type][status];
+}
+
+/**
  * 生成唯一 ID
  */
 function generateId() {
@@ -58,7 +75,7 @@ function addItem(item) {
     date: item.date,
     description: (item.description || '').trim(),
     contact: item.contact.trim(),
-    status: 'active', // active 进行中 / resolved 已解决
+    status: 'active', // 存储状态保持 active / resolved，展示文案由 getStatusText 决定
     createdAt: Date.now()
   };
 
@@ -145,6 +162,7 @@ function clearAllItems() {
 // 导出给 Node.js 环境（单元测试用）
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
+    getStatusText,
     generateId,
     getAllItems,
     saveAllItems,

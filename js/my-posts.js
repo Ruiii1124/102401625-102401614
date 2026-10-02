@@ -42,15 +42,17 @@ function renderList() {
     const icon = getCategoryIcon(item.category);
     const typeText = item.type === 'lost' ? '寻物' : '招领';
     const typeClass = item.type === 'lost' ? 'lost' : 'found';
+    const statusText = getStatusText(item.type, item.status);
+    const statusClass = item.status === 'resolved' ? 'resolved' : typeClass;
 
-    // 进行中：显示两个标记按钮
+    // 进行中：显示标记完成和查看详情按钮
     // 已完成：只显示状态标签
     let actionHtml = '';
     if (currentStatus === 'active') {
-      const btnText = item.type === 'lost' ? '标记为已找回' : '标记为已归还';
+      const btnText = '标记为' + getStatusText(item.type, 'resolved');
       actionHtml = `
         <div class="actions">
-          <button class="primary" onclick="markResolved('${item.id}', '${item.type}')">${btnText}</button>
+          <button class="primary" onclick="markResolved('${item.id}')">${btnText}</button>
           <button onclick="goDetail('${item.id}')">查看详情</button>
         </div>
       `;
@@ -68,7 +70,7 @@ function renderList() {
           <div class="thumb">${icon}</div>
           <div class="info" style="flex:1;min-width:0;">
             <span class="tag ${typeClass}">${typeText}</span>
-            ${item.status === 'resolved' ? '<span class="tag resolved">已解决</span>' : ''}
+            <span class="tag ${statusClass}">${statusText}</span>
             <div class="name">${escapeHtml(item.name)}</div>
             <div class="meta" style="font-size:12px;color:#6b7280;">📍 ${escapeHtml(item.location)}</div>
             <div class="time" style="font-size:11px;color:#9ca3af;">${escapeHtml(item.date)}</div>
@@ -80,12 +82,12 @@ function renderList() {
   }).join('');
 }
 
-// 标记为已解决
-function markResolved(id, type) {
+// 标记为已完成，业务文案由信息类型决定
+function markResolved(id) {
   const ok = updateStatus(id, 'resolved');
   if (ok) {
     // 跳转到状态更新成功页
-    window.location.href = 'status-updated.html?id=' + id + '&type=' + type;
+    window.location.href = 'status-updated.html?id=' + id;
   } else {
     showToast('操作失败，未找到该信息');
   }

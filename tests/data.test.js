@@ -147,11 +147,19 @@ describe('校园失物招领 - 数据层测试', function () {
 
     const updated = data.getItemById(item.id);
     expect(updated.status).to.equal('resolved');
+    expect(data.getStatusText(updated.type, updated.status)).to.equal('已找到');
+    expect(updated).to.deep.equal({ ...item, status: 'resolved' });
   });
 
   it('11. updateStatus 传入不存在的 id 返回 false', function () {
+    data.addItem({
+      type: 'lost', name: '校园卡', location: 'A',
+      date: '2026-10-05', contact: '1'
+    });
+    const before = data.getAllItems();
     const ok = data.updateStatus('not-exist-id', 'resolved');
     expect(ok).to.equal(false);
+    expect(data.getAllItems()).to.deep.equal(before);
   });
 
   it('12. deleteItem 删除后 getAllItems 长度减 1', function () {
@@ -164,6 +172,53 @@ describe('校园失物招领 - 数据层测试', function () {
     const ok = data.deleteItem(item.id);
     expect(ok).to.equal(true);
     expect(data.getAllItems()).to.have.lengthOf(0);
+  });
+
+  [
+    ['lost', 'active', '寻找中'],
+    ['lost', 'resolved', '已找到'],
+    ['found', 'active', '待认领'],
+    ['found', 'resolved', '已归还']
+  ].forEach(([type, status, expected], index) => {
+    it(`${13 + index}. ${type} + ${status} 显示“${expected}”`, function () {
+      expect(data.getStatusText(type, status)).to.equal(expected);
+    });
+  });
+
+  it('17. 招领 active 更新为 resolved 后显示已归还', function () {
+    const item = data.addItem({
+      type: 'found', name: '钥匙', location: '食堂',
+      date: '2026-10-05', contact: '123'
+    });
+    expect(item.status).to.equal('active');
+    expect(data.getStatusText(item.type, item.status)).to.equal('待认领');
+
+    expect(data.updateStatus(item.id, 'resolved')).to.equal(true);
+    const updated = data.getItemById(item.id);
+    expect(data.getStatusText(updated.type, updated.status)).to.equal('已归还');
+    expect(updated).to.deep.equal({ ...item, status: 'resolved' });
+  });
+
+  it('18. 非法 status 被拒绝且不改变已保存的信息', function () {
+    const item = data.addItem({
+      type: 'lost', name: '校园卡', location: '教学楼',
+      date: '2026-10-05', contact: '123'
+    });
+    const before = data.getAllItems();
+
+    ['done', '已找到', '已归还', '', null, undefined].forEach(status => {
+      expect(() => data.updateStatus(item.id, status))
+        .to.throw('status 必须是 active 或 resolved');
+      expect(data.getAllItems()).to.deep.equal(before);
+    });
+  });
+
+  it('19. 未知信息类型不误显示正常业务状态', function () {
+    expect(data.getStatusText('unknown', 'resolved')).to.equal('状态未知');
+  });
+
+  it('20. 未知存储状态不误显示已完成', function () {
+    expect(data.getStatusText('lost', 'done')).to.equal('状态未知');
   });
 
 });

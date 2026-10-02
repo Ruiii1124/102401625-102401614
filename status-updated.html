@@ -11,21 +11,24 @@
   <div class="success-page">
     <div class="check">✓</div>
     <h2>状态已更新</h2>
-    <p id="status-text">该信息已移入“已完成”列表。</p>
+    <p id="status-text"></p>
     <button class="btn-primary" onclick="goMyPosts()">返回我的发布</button>
   </div>
 
+  <script src="js/data.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const params = new URLSearchParams(window.location.search);
-      const type = params.get('type');
+      const item = getItemById(params.get('id'));
 
       const textEl = document.getElementById('status-text');
-      if (type === 'lost') {
-        textEl.textContent = '该信息已标记为“已找回”，并移入“已完成”列表。';
-      } else if (type === 'found') {
-        textEl.textContent = '该信息已标记为“已归还”，并移入“已完成”列表。';
+      if (!item || item.status !== 'resolved') {
+        document.querySelector('h2').textContent = '未确认状态更新';
+        document.querySelector('.check').textContent = '!';
+        textEl.textContent = '没有找到已完成的信息，请返回我的发布核对。';
+        return;
       }
+      textEl.textContent = `该信息已标记为“${getStatusText(item.type, item.status)}”，并移入“已完成”列表。`;
     });
 
     function goMyPosts() {
