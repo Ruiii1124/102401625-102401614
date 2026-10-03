@@ -36,11 +36,13 @@
     <!-- 物品分类筛选 -->
     <div class="form-group">
       <label>物品分类</label>
-      <div class="filter-tabs" id="cat-tabs">
+      <div class="filter-tabs" id="cat-tabs" style="flex-wrap:wrap;">
         <button class="active" data-cat="all" onclick="switchCat(this, 'all')">全部</button>
         <button data-cat="校园卡" onclick="switchCat(this, '校园卡')">校园卡</button>
         <button data-cat="钥匙" onclick="switchCat(this, '钥匙')">钥匙</button>
+        <button data-cat="雨伞" onclick="switchCat(this, '雨伞')">雨伞</button>
         <button data-cat="电子产品" onclick="switchCat(this, '电子产品')">电子产品</button>
+        <button data-cat="书籍" onclick="switchCat(this, '书籍')">书籍</button>
         <button data-cat="其他" onclick="switchCat(this, '其他')">其他</button>
       </div>
     </div>
@@ -51,8 +53,13 @@
       <div class="filter-tabs" id="status-tabs">
         <button class="active" data-status="all" onclick="switchStatus(this, 'all')">全部</button>
         <button data-status="active" onclick="switchStatus(this, 'active')">进行中</button>
-        <button data-status="resolved" onclick="switchStatus(this, 'resolved')">已解决</button>
+        <button data-status="resolved" onclick="switchStatus(this, 'resolved')">已完成</button>
       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="location">遗失 / 拾取地点</label>
+      <input type="text" id="location" placeholder="地点关键词，如：图书馆；留空不限">
     </div>
 
     <!-- 搜索历史 -->

@@ -113,15 +113,20 @@ function getItemById(id) {
 /**
  * 搜索信息
  * @param {string} keyword - 关键词，匹配名称和描述
+ * @param {Object} filters - 可选 type、category、status、location 组合条件
  * @returns {Array}
  */
-function searchItems(keyword) {
-  if (!keyword || keyword.trim() === '') return getAllItems();
-  const kw = keyword.trim().toLowerCase();
+function searchItems(keyword, filters = {}) {
+  const kw = (keyword || '').trim().toLowerCase();
+  const location = (filters.location || '').trim().toLowerCase();
   return getAllItems().filter(item => {
     const name = (item.name || '').toLowerCase();
     const desc = (item.description || '').toLowerCase();
-    return name.includes(kw) || desc.includes(kw);
+    return (!kw || name.includes(kw) || desc.includes(kw))
+      && (!filters.type || filters.type === 'all' || item.type === filters.type)
+      && (!filters.category || filters.category === 'all' || item.category === filters.category)
+      && (!filters.status || filters.status === 'all' || item.status === filters.status)
+      && (!location || (item.location || '').toLowerCase().includes(location));
   });
 }
 
