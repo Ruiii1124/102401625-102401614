@@ -36,6 +36,7 @@ function switchCat(btn, cat) {
 }
 
 // 渲染搜索历史
+// 渲染搜索历史
 function renderHistory() {
   const listEl = document.getElementById('history-list');
   const history = getHistory();
@@ -45,12 +46,23 @@ function renderHistory() {
     return;
   }
 
-  listEl.innerHTML = history.map(kw => `
-    <div class="history-item" onclick="useHistory('${escapeHtml(kw)}')">
+  listEl.innerHTML = history.map((kw, index) => `
+    <div class="history-item" data-index="${index}">
       <span class="icon">🕐</span>
       ${escapeHtml(kw)}
     </div>
   `).join('');
+
+  // 用事件委托绑定点击，避免关键词里的特殊字符破坏 HTML
+  listEl.querySelectorAll('.history-item').forEach(el => {
+    el.addEventListener('click', function () {
+      const idx = parseInt(this.getAttribute('data-index'), 10);
+      const list = getHistory();
+      if (list[idx]) {
+        useHistory(list[idx]);
+      }
+    });
+  });
 }
 
 // 读取搜索历史
