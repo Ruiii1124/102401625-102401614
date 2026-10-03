@@ -3,6 +3,7 @@
 // 所有数据操作都封装在这里，页面只调用这些函数，不直接操作 localStorage
 
 const STORAGE_KEY = 'campus_lost_found_items';
+const OWNER_KEY = 'campus_lost_found_owner_id';
 
 /**
  * 将信息类型和存储状态转换为统一的业务文案。
@@ -29,6 +30,19 @@ function generateId() {
 }
 
 /**
+ * 获取当前用户标识（首次访问时生成并存入 localStorage）
+ * @returns {string}
+ */
+function getOwnerId() {
+  let id = localStorage.getItem(OWNER_KEY);
+  if (!id) {
+    id = 'owner_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    localStorage.setItem(OWNER_KEY, id);
+  }
+  return id;
+}
+
+/**
  * 获取所有信息
  * @returns {Array} 信息数组
  */
@@ -52,7 +66,7 @@ function saveAllItems(items) {
 /**
  * 添加一条信息
  * @param {Object} item - { type, name, category, location, date, description, contact }
- * @returns {Object} 添加成功的信息（含 id、status、createdAt）
+ * @returns {Object} 添加成功的信息（含 id、status、ownerId、createdAt）
  * @throws {Error} 缺少必填字段时抛出错误
  */
 function addItem(item) {
@@ -75,12 +89,13 @@ function addItem(item) {
     date: item.date,
     description: (item.description || '').trim(),
     contact: item.contact.trim(),
-    status: 'active', // 存储状态保持 active / resolved，展示文案由 getStatusText 决定
+    status: 'active',
+    ownerId: getOwnerId(),
     createdAt: Date.now()
   };
 
   const items = getAllItems();
-  items.unshift(newItem); // 新发布的放在最前面
+  items.unshift(newItem);
   saveAllItems(items);
   return newItem;
 }
@@ -119,6 +134,15 @@ function filterByType(type) {
   const items = getAllItems();
   if (type === 'all') return items;
   return items.filter(item => item.type === type);
+}
+
+/**
+ * 按发布者筛选
+ * @param {string} ownerId
+ * @returns {Array}
+ */
+function filterByOwner(ownerId) {
+  return getAllItems().filter(item => item.ownerId === ownerId);
 }
 
 /**
@@ -164,15 +188,18 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     getStatusText,
     generateId,
+    getOwnerId,
     getAllItems,
     saveAllItems,
     addItem,
     getItemById,
     searchItems,
     filterByType,
+    filterByOwner,
     updateStatus,
     deleteItem,
     clearAllItems,
-    STORAGE_KEY
+    STORAGE_KEY,
+    OWNER_KEY
   };
 }

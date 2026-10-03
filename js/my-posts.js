@@ -19,10 +19,13 @@ function switchStatus(btn, status) {
 // 渲染我的发布列表
 function renderList() {
   const listEl = document.getElementById('my-list');
+  const ownerId = getOwnerId();
   const allItems = getAllItems();
 
-  // 只显示当前状态的信息
-  const items = allItems.filter(it => it.status === currentStatus);
+  // 只显示当前用户发布的、且状态匹配的信息
+  const items = allItems.filter(it =>
+    it.status === currentStatus && it.ownerId === ownerId
+  );
 
   if (items.length === 0) {
     const tip = currentStatus === 'active'
