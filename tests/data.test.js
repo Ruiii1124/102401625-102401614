@@ -31,7 +31,7 @@ const data = require('../js/data.js');
 describe('校园失物招领 - 数据层测试', function () {
 
   beforeEach(function () {
-    data.clearAllItems();
+    localStorage.clear();
   });
 
   it('1. 空存储时 getAllItems 返回空数组', function () {
@@ -219,6 +219,57 @@ describe('校园失物招领 - 数据层测试', function () {
 
   it('20. 未知存储状态不误显示已完成', function () {
     expect(data.getStatusText('lost', 'done')).to.equal('状态未知');
+  });
+
+  it('ownerId 首次生成并在后续访问中保持一致，发布时记录归属', function () {
+    const ownerId = data.getOwnerId();
+    expect(ownerId).to.be.a('string').and.not.equal('');
+    expect(data.getOwnerId()).to.equal(ownerId);
+    const item = data.addItem({ type: 'lost', name: '卡', location: 'A', date: '2026-10-03', contact: '123' });
+    expect(item.ownerId).to.equal(ownerId);
+    expect(data.getItemById(item.id).ownerId).to.equal(ownerId);
+  });
+
+  it('filterByOwner 只返回对应发布者的记录', function () {
+    localStorage.setItem(data.OWNER_KEY, 'owner-a');
+    const first = data.addItem({ type: 'lost', name: '卡', location: 'A', date: '2026-10-03', contact: '123' });
+    localStorage.setItem(data.OWNER_KEY, 'owner-b');
+    const second = data.addItem({ type: 'found', name: '钥匙', location: 'B', date: '2026-10-03', contact: '456' });
+    expect(data.filterByOwner('owner-a')).to.deep.equal([first]);
+    expect(data.filterByOwner('owner-b')).to.deep.equal([second]);
+  });
+
+  it('非本人不能修改状态，持久化数据保持原样', function () {
+    localStorage.setItem(data.OWNER_KEY, 'owner-a');
+    const item = data.addItem({ type: 'lost', name: '卡', location: 'A', date: '2026-10-03', contact: '123' });
+    const before = localStorage.getItem(data.STORAGE_KEY);
+    localStorage.setItem(data.OWNER_KEY, 'owner-b');
+    expect(() => data.updateStatus(item.id, 'resolved')).to.throw('只能修改本人发布的信息');
+    expect(localStorage.getItem(data.STORAGE_KEY)).to.equal(before);
+  });
+
+  it('缺少 ownerId 的旧记录仍可浏览，但不能被自动认领或修改', function () {
+    const legacy = { id: 'legacy', type: 'lost', name: '旧卡', status: 'active' };
+    data.saveAllItems([legacy]);
+    expect(data.getItemById('legacy')).to.deep.equal(legacy);
+    expect(data.searchItems('旧卡')).to.deep.equal([legacy]);
+    expect(() => data.updateStatus('legacy', 'resolved')).to.throw('只能修改本人发布的信息');
+    expect(data.getItemById('legacy')).to.deep.equal(legacy);
+  });
+
+  it('状态保存失败抛出异常，已存储状态不变，恢复存储后可重试', function () {
+    const item = data.addItem({ type: 'found', name: '卡', location: 'A', date: '2026-10-03', contact: '123' });
+    const before = localStorage.getItem(data.STORAGE_KEY);
+    const original = localStorage.setItem;
+    try {
+      localStorage.setItem = () => { throw new Error('QuotaExceededError'); };
+      expect(() => data.updateStatus(item.id, 'resolved')).to.throw('QuotaExceededError');
+      expect(localStorage.getItem(data.STORAGE_KEY)).to.equal(before);
+    } finally {
+      localStorage.setItem = original;
+    }
+    expect(data.updateStatus(item.id, 'resolved')).to.equal(true);
+    expect(data.getItemById(item.id).status).to.equal('resolved');
   });
 
 });

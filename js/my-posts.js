@@ -87,12 +87,16 @@ function renderList() {
 
 // 标记为已完成，业务文案由信息类型决定
 function markResolved(id) {
-  const ok = updateStatus(id, 'resolved');
-  if (ok) {
-    // 跳转到状态更新成功页
-    window.location.href = 'status-updated.html?id=' + id;
-  } else {
-    showToast('操作失败，未找到该信息');
+  try {
+    const ok = updateStatus(id, 'resolved');
+    if (ok) {
+      // 只有持久化成功后才跳转。
+      window.location.href = 'status-updated.html?id=' + id;
+    } else {
+      showToast('操作失败，未找到该信息');
+    }
+  } catch (e) {
+    showToast('状态更新失败，请重试');
   }
 }
 

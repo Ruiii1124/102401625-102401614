@@ -158,6 +158,10 @@ function updateStatus(id, status) {
   const items = getAllItems();
   const index = items.findIndex(item => item.id === id);
   if (index === -1) return false;
+  // 旧记录没有可确认的发布者，只保留浏览，不自动认领。
+  if (!items[index].ownerId || items[index].ownerId !== getOwnerId()) {
+    throw new Error('只能修改本人发布的信息');
+  }
   items[index].status = status;
   saveAllItems(items);
   return true;
