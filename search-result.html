@@ -34,6 +34,7 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/image.js"></script>
   <script>
     let sortByTime = true;
     let currentParams = { keyword: '', type: 'all', category: 'all', status: 'all', location: '' };
@@ -103,7 +104,7 @@
 
         return `
           <div class="card" onclick="goDetail('${item.id}')">
-            <div class="thumb">${icon}</div>
+            <div class="thumb">${renderItemImage(item.image, icon)}</div>
             <div class="info">
               <span class="tag ${typeClass}">${typeText}</span>
               ${statusTag}
@@ -114,6 +115,7 @@
           </div>
         `;
       }).join('');
+      bindItemImageFallbacks(listEl);
     }
 
     function getCategoryIcon(category) {

@@ -106,6 +106,7 @@ describe('分类、地点及组合搜索', function () {
   it('结果页实际使用全部条件，重新搜索和排序保留地点筛选', function () {
     const params = new URLSearchParams({ keyword: '教材', type: 'lost', category: '书籍', status: 'resolved', location: '图书馆' });
     const page = pageContext('?' + params, { searchItems: data.searchItems, getStatusText: data.getStatusText });
+    vm.runInContext(read('js/image.js'), page.context);
     const inline = read('search-result.html').match(/<script>([\s\S]*?)<\/script>/)[1];
     vm.runInContext(inline, page.context);
     page.ready();

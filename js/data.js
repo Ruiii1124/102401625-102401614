@@ -65,7 +65,7 @@ function saveAllItems(items) {
 
 /**
  * 添加一条信息
- * @param {Object} item - { type, name, category, location, date, description, contact }
+ * @param {Object} item - { type, name, category, location, date, description, contact, image? }
  * @returns {Object} 添加成功的信息（含 id、status、ownerId、createdAt）
  * @throws {Error} 缺少必填字段时抛出错误
  */
@@ -93,6 +93,8 @@ function addItem(item) {
     ownerId: getOwnerId(),
     createdAt: Date.now()
   };
+  // 图片可选；不为旧记录补字段，不改变无图片发布的数据结构。
+  if (item.image) newItem.image = item.image;
 
   const items = getAllItems();
   items.unshift(newItem);

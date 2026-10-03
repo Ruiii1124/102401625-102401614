@@ -364,6 +364,11 @@ body {
 
 /* 上传图片占位 */
 .upload-box {
+  position: relative;
+  display: block;
+  width: 100%;
+  background: #fff;
+  font-family: inherit;
   border: 1px dashed #cbd5e1;
   border-radius: 10px;
   padding: 24px 0;
@@ -648,4 +653,52 @@ body {
 
 .toast.show {
   display: block;
+}
+
+.image-file {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-box:focus-within {
+  outline: 2px solid #2f9e7e;
+}
+
+.image-selection {
+  margin-bottom: 18px;
+}
+
+.image-preview {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #eaf6f1;
+  margin-bottom: 10px;
+}
+
+.image-selection p {
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.item-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.detail-image .item-photo {
+  object-fit: contain;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: wait;
 }
