@@ -29,11 +29,9 @@ function renderDetail() {
   const typeText = item.type === 'lost' ? '寻物启事' : '招领信息';
   const typeClass = item.type === 'lost' ? 'lost' : 'found';
 
-  // 状态标签
-  let statusTag = '';
-  if (item.status === 'resolved') {
-    statusTag = '<span class="tag resolved">已解决</span>';
-  }
+  const statusText = getStatusText(item.type, item.status);
+  const statusClass = item.status === 'resolved' ? 'resolved' : typeClass;
+  const statusTag = `<span class="tag ${statusClass}">${statusText}</span>`;
 
   const html = `
     <div class="detail-image">${icon}</div>
@@ -43,7 +41,7 @@ function renderDetail() {
       <span class="tag ${typeClass}">${typeText}</span>
     </div>
 
-    ${statusTag ? '<div style="margin-bottom:12px;">' + statusTag + '</div>' : ''}
+    <div style="margin-bottom:12px;">${statusTag}</div>
 
     <div class="detail-row">
       <span class="label">📍 地点</span>
@@ -74,7 +72,7 @@ function renderDetail() {
     </div>
 
     ${item.status === 'resolved'
-      ? '<button class="btn-secondary" disabled style="opacity:0.5;">该信息已解决</button>'
+      ? `<button class="btn-secondary" disabled style="opacity:0.5;">该信息${statusText}</button>`
       : '<button class="btn-primary" onclick="goContact()">联系发布者</button>'
     }
   `;
