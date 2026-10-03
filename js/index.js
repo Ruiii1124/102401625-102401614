@@ -107,9 +107,9 @@ function goSearch() {
   window.location.href = 'search.html';
 }
 
-// 带关键词跳转搜索页
-function goSearchWith(keyword) {
-  window.location.href = 'search.html?keyword=' + encodeURIComponent(keyword);
+// 带分类跳转搜索结果页（按分类精确筛选）
+function goSearchWith(category) {
+  window.location.href = 'search-result.html?category=' + encodeURIComponent(category);
 }
 
 // 跳转详情页

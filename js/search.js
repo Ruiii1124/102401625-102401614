@@ -4,6 +4,7 @@ const HISTORY_KEY = 'campus_lost_found_search_history';
 
 let currentType = 'all';
 let currentCat = 'all';
+let currentStatus = 'all';
 
 // 页面加载
 document.addEventListener('DOMContentLoaded', function () {
@@ -35,7 +36,15 @@ function switchCat(btn, cat) {
   btn.classList.add('active');
 }
 
-// 渲染搜索历史
+// 切换信息状态
+function switchStatus(btn, status) {
+  currentStatus = status;
+  document.querySelectorAll('#status-tabs button').forEach(b => {
+    b.classList.remove('active');
+  });
+  btn.classList.add('active');
+}
+
 // 渲染搜索历史
 function renderHistory() {
   const listEl = document.getElementById('history-list');
@@ -103,6 +112,7 @@ function doSearch() {
   if (keyword) params.set('keyword', keyword);
   if (currentType !== 'all') params.set('type', currentType);
   if (currentCat !== 'all') params.set('category', currentCat);
+  if (currentStatus !== 'all') params.set('status', currentStatus);
 
   window.location.href = 'search-result.html?' + params.toString();
 }

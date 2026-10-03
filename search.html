@@ -45,6 +45,16 @@
       </div>
     </div>
 
+    <!-- 状态筛选 -->
+    <div class="form-group">
+      <label>信息状态</label>
+      <div class="filter-tabs" id="status-tabs">
+        <button class="active" data-status="all" onclick="switchStatus(this, 'all')">全部</button>
+        <button data-status="active" onclick="switchStatus(this, 'active')">进行中</button>
+        <button data-status="resolved" onclick="switchStatus(this, 'resolved')">已解决</button>
+      </div>
+    </div>
+
     <!-- 搜索历史 -->
     <div class="form-group">
       <label>搜索历史</label>

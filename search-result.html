@@ -36,13 +36,14 @@
   <script src="js/data.js"></script>
   <script>
     let sortByTime = true;
-    let currentParams = { keyword: '', type: 'all', category: 'all' };
+    let currentParams = { keyword: '', type: 'all', category: 'all', status: 'all' };
 
     document.addEventListener('DOMContentLoaded', function () {
       const params = new URLSearchParams(window.location.search);
       currentParams.keyword = params.get('keyword') || '';
       currentParams.type = params.get('type') || 'all';
       currentParams.category = params.get('category') || 'all';
+      currentParams.status = params.get('status') || 'all';
 
       document.getElementById('keyword').value = currentParams.keyword;
       renderResults();
@@ -55,6 +56,7 @@
       if (kw) params.set('keyword', kw);
       if (currentParams.type !== 'all') params.set('type', currentParams.type);
       if (currentParams.category !== 'all') params.set('category', currentParams.category);
+      if (currentParams.status !== 'all') params.set('status', currentParams.status);
       window.location.href = 'search-result.html?' + params.toString();
     }
 
@@ -76,6 +78,10 @@
       // 分类筛选
       if (currentParams.category !== 'all') {
         items = items.filter(it => it.category === currentParams.category);
+      }
+      // 状态筛选
+      if (currentParams.status !== 'all') {
+        items = items.filter(it => it.status === currentParams.status);
       }
 
       // 排序
