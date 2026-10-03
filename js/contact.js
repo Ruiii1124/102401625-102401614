@@ -51,6 +51,7 @@ function copyContact(text) {
 }
 
 // 兼容旧浏览器的复制方式
+// 兼容旧浏览器的复制方式
 function fallbackCopy(text) {
   const textarea = document.createElement('textarea');
   textarea.value = text;
@@ -58,13 +59,16 @@ function fallbackCopy(text) {
   textarea.style.opacity = '0';
   document.body.appendChild(textarea);
   textarea.select();
+
+  let ok = false;
   try {
-    document.execCommand('copy');
-    showToast('已复制：' + text);
+    ok = document.execCommand('copy');
   } catch (e) {
-    showToast('复制失败，请手动复制');
+    ok = false;
   }
+
   document.body.removeChild(textarea);
+  showToast(ok ? '已复制：' + text : '复制失败，请手动复制');
 }
 
 function renderNotFound() {
