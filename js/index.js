@@ -50,7 +50,7 @@ function renderList() {
 
     return `
       <div class="card" onclick="goDetail('${item.id}')">
-        <div class="thumb">${icon}</div>
+        <div class="thumb">${renderItemImage(item.image, icon)}</div>
         <div class="info">
           <span class="tag ${typeClass}">${typeText}</span>
           ${statusTag}
@@ -61,6 +61,7 @@ function renderList() {
       </div>
     `;
   }).join('');
+  bindItemImageFallbacks(listEl);
 }
 
 // 根据分类返回图标

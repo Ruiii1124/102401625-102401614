@@ -34,7 +34,7 @@ function renderDetail() {
   const statusTag = `<span class="tag ${statusClass}">${statusText}</span>`;
 
   const html = `
-    <div class="detail-image">${icon}</div>
+    <div class="detail-image">${renderItemImage(item.image, icon)}</div>
 
     <div class="detail-title">
       <h2>${escapeHtml(item.name)}</h2>
@@ -78,6 +78,7 @@ function renderDetail() {
   `;
 
   document.getElementById('detail-content').innerHTML = html;
+  bindItemImageFallbacks(document.getElementById('detail-content'));
 }
 
 // 找不到信息

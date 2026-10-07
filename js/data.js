@@ -65,7 +65,7 @@ function saveAllItems(items) {
 
 /**
  * 添加一条信息
- * @param {Object} item - { type, name, category, location, date, description, contact }
+ * @param {Object} item - { type, name, category, location, date, description, contact, image? }
  * @returns {Object} 添加成功的信息（含 id、status、ownerId、createdAt）
  * @throws {Error} 缺少必填字段时抛出错误
  */
@@ -93,6 +93,8 @@ function addItem(item) {
     ownerId: getOwnerId(),
     createdAt: Date.now()
   };
+  // 图片可选；不为旧记录补字段，不改变无图片发布的数据结构。
+  if (item.image) newItem.image = item.image;
 
   const items = getAllItems();
   items.unshift(newItem);
@@ -113,15 +115,20 @@ function getItemById(id) {
 /**
  * 搜索信息
  * @param {string} keyword - 关键词，匹配名称和描述
+ * @param {Object} filters - 可选 type、category、status、location 组合条件
  * @returns {Array}
  */
-function searchItems(keyword) {
-  if (!keyword || keyword.trim() === '') return getAllItems();
-  const kw = keyword.trim().toLowerCase();
+function searchItems(keyword, filters = {}) {
+  const kw = (keyword || '').trim().toLowerCase();
+  const location = (filters.location || '').trim().toLowerCase();
   return getAllItems().filter(item => {
     const name = (item.name || '').toLowerCase();
     const desc = (item.description || '').toLowerCase();
-    return name.includes(kw) || desc.includes(kw);
+    return (!kw || name.includes(kw) || desc.includes(kw))
+      && (!filters.type || filters.type === 'all' || item.type === filters.type)
+      && (!filters.category || filters.category === 'all' || item.category === filters.category)
+      && (!filters.status || filters.status === 'all' || item.status === filters.status)
+      && (!location || (item.location || '').toLowerCase().includes(location));
   });
 }
 
@@ -158,6 +165,10 @@ function updateStatus(id, status) {
   const items = getAllItems();
   const index = items.findIndex(item => item.id === id);
   if (index === -1) return false;
+  // 旧记录没有可确认的发布者，只保留浏览，不自动认领。
+  if (!items[index].ownerId || items[index].ownerId !== getOwnerId()) {
+    throw new Error('只能修改本人发布的信息');
+  }
   items[index].status = status;
   saveAllItems(items);
   return true;

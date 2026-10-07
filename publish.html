@@ -60,20 +60,26 @@
       <input type="text" id="contact" placeholder="例如：2766912385">
     </div>
 
-    <!-- 上传图片占位（本次不实现真实上传） -->
-    <div class="upload-box" onclick="alert('本次作业暂不支持图片上传')">
-      <span class="plus">+</span>
-      上传物品图片（可选）
+    <!-- 单张图片，可选；压缩成功后才保存到本地 -->
+    <label class="upload-box" for="image-file">
+      <span id="image-choice-label"><span class="plus">+</span>上传物品图片（可选）</span>
+      <input type="file" id="image-file" class="image-file" accept="image/jpeg,image/png,image/webp" aria-label="选择物品图片">
+    </label>
+    <div class="image-selection">
+      <img id="image-preview" class="image-preview" alt="所选物品图片预览" hidden>
+      <button type="button" class="btn-secondary" id="remove-image" hidden>删除图片</button>
+      <p id="image-status" aria-live="polite">最多 1 张 JPG / PNG / WebP 图片，可不上传</p>
     </div>
 
     <!-- 发布按钮 -->
-    <button class="btn-primary" onclick="submitForm()">确认发布</button>
+    <button class="btn-primary" id="submit-post" onclick="submitForm()">确认发布</button>
   </div>
 
   <!-- 提示 toast -->
   <div class="toast" id="toast"></div>
 
   <script src="js/data.js"></script>
+  <script src="js/image.js"></script>
   <script src="js/publish.js"></script>
 </body>
 </html>

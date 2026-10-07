@@ -34,9 +34,10 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/image.js"></script>
   <script>
     let sortByTime = true;
-    let currentParams = { keyword: '', type: 'all', category: 'all', status: 'all' };
+    let currentParams = { keyword: '', type: 'all', category: 'all', status: 'all', location: '' };
 
     document.addEventListener('DOMContentLoaded', function () {
       const params = new URLSearchParams(window.location.search);
@@ -44,6 +45,7 @@
       currentParams.type = params.get('type') || 'all';
       currentParams.category = params.get('category') || 'all';
       currentParams.status = params.get('status') || 'all';
+      currentParams.location = params.get('location') || '';
 
       document.getElementById('keyword').value = currentParams.keyword;
       renderResults();
@@ -57,6 +59,7 @@
       if (currentParams.type !== 'all') params.set('type', currentParams.type);
       if (currentParams.category !== 'all') params.set('category', currentParams.category);
       if (currentParams.status !== 'all') params.set('status', currentParams.status);
+      if (currentParams.location) params.set('location', currentParams.location);
       window.location.href = 'search-result.html?' + params.toString();
     }
 
@@ -69,20 +72,7 @@
 
     // 渲染结果
     function renderResults() {
-      let items = searchItems(currentParams.keyword);
-
-      // 类型筛选
-      if (currentParams.type !== 'all') {
-        items = items.filter(it => it.type === currentParams.type);
-      }
-      // 分类筛选
-      if (currentParams.category !== 'all') {
-        items = items.filter(it => it.category === currentParams.category);
-      }
-      // 状态筛选
-      if (currentParams.status !== 'all') {
-        items = items.filter(it => it.status === currentParams.status);
-      }
+      let items = searchItems(currentParams.keyword, currentParams);
 
       // 排序
       if (sortByTime) {
@@ -98,7 +88,7 @@
         listEl.innerHTML = `
           <div class="empty">
             <span class="icon">🔍</span>
-            没有找到相关信息，换个关键词试试
+            没有找到相关信息，换个关键词或筛选条件试试
           </div>
         `;
         return;
@@ -114,7 +104,7 @@
 
         return `
           <div class="card" onclick="goDetail('${item.id}')">
-            <div class="thumb">${icon}</div>
+            <div class="thumb">${renderItemImage(item.image, icon)}</div>
             <div class="info">
               <span class="tag ${typeClass}">${typeText}</span>
               ${statusTag}
@@ -125,6 +115,7 @@
           </div>
         `;
       }).join('');
+      bindItemImageFallbacks(listEl);
     }
 
     function getCategoryIcon(category) {

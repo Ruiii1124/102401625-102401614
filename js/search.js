@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (kw) {
     document.getElementById('keyword').value = kw;
   }
+  document.getElementById('location').value = params.get('location') || '';
 
   renderHistory();
 });
@@ -103,6 +104,7 @@ function useHistory(keyword) {
 // 执行搜索：跳转到结果页，把条件带过去
 function doSearch() {
   const keyword = document.getElementById('keyword').value.trim();
+  const location = document.getElementById('location').value.trim();
 
   if (keyword) {
     addHistory(keyword);
@@ -113,6 +115,7 @@ function doSearch() {
   if (currentType !== 'all') params.set('type', currentType);
   if (currentCat !== 'all') params.set('category', currentCat);
   if (currentStatus !== 'all') params.set('status', currentStatus);
+  if (location) params.set('location', location);
 
   window.location.href = 'search-result.html?' + params.toString();
 }

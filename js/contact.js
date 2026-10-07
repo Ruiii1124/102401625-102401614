@@ -32,25 +32,26 @@ function renderContact() {
       请先核对物品特征，不要公开完整学号等隐私信息。<br>
       点击下方按钮可一键复制联系方式。
     </p>
-    <button class="btn-primary" onclick="copyContact('${escapeHtml(contact)}')" style="margin-bottom:12px;">复制联系方式</button>
+    <button class="btn-primary" id="copy-contact" style="margin-bottom:12px;">复制联系方式</button>
     <button class="btn-secondary" onclick="goBack()">返回详情</button>
   `;
+  document.getElementById('copy-contact').addEventListener('click', () => copyContact(contact));
 }
 
 // 一键复制
-function copyContact(text) {
+async function copyContact(text) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
+    try {
+      await navigator.clipboard.writeText(text);
       showToast('已复制：' + text);
-    }).catch(() => {
-      fallbackCopy(text);
-    });
-  } else {
-    fallbackCopy(text);
+      return;
+    } catch (e) {
+      // Clipboard API 被拒绝时尝试已有兼容路径。
+    }
   }
+  fallbackCopy(text);
 }
 
-// 兼容旧浏览器的复制方式
 // 兼容旧浏览器的复制方式
 function fallbackCopy(text) {
   const textarea = document.createElement('textarea');
